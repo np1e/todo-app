@@ -2,3 +2,11 @@ node_modules/
 package-lock.json
 
 .env
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+
+server/WEB-INF/

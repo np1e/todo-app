@@ -1,6 +1,6 @@
 const express = require("express");
 const logger = require('morgan');
-const nunjucks = require('nunjucks');
+const cors = require('cors');
 require('dotenv').config();
 
 const router = require('./routes');
@@ -8,16 +8,14 @@ const router = require('./routes');
 const app = express();
 const port = process.env.PORT;
 
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app
-});
-
 app.use(express.static('static'));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'njk');
+app.use(cors({
+    origin: /http(s)?:\/\/localhost:\d{4}/,
+    methods: ['GET', 'POST', 'DELETE']
+}));
 
 app.use('/', router);
 
