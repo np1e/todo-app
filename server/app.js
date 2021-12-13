@@ -11,11 +11,8 @@ const port = process.env.PORT;
 app.use(express.static('static'));
 app.use(logger('dev'));
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: /http(s)?:\/\/localhost:\d{4}/,
-    methods: ['GET', 'POST', 'DELETE']
-}));
 
 app.use('/', router);
 
