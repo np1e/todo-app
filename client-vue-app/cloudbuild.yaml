@@ -1,0 +1,12 @@
+steps:
+  - name: node
+    entrypoint: npm
+    args: ['install']
+    dir: 'client-vue-app'
+  - name: node
+    entrypoint: npm
+    args: ['run', 'build']
+    dir: 'client-vue-app'
+  - name: gcr.io/$PROJECT_ID/firebase
+    args: ['deploy', '--project=$PROJECT_ID', '--only=hosting']
+    dir: 'client-vue-app'
