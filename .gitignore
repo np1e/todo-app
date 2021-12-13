@@ -1,5 +1,12 @@
 node_modules/
 package-lock.json
-dist/
+
 .env
-*.cache
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+
+server/WEB-INF/
