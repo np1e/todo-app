@@ -6,34 +6,10 @@ const datastore = new Datastore();
 const kind = 'Todo';
 
 class Todo {
-
-    isFinished() {
-        return this.status === 1;
-    }
-
-    get overdue() {
-        return isAfter(new Date(), this.dueDate) && !isSameDay(this.dueDate, new Date());
-    }
-
-    get formattedDueDate() {
-        const today = new Date();
-        const yesterday = subDays(today, 1);
-        const tomorrow = addDays(today, 1);
-
-        if(isSameDay(this.dueDate, yesterday)) {
-            return "Yesterday";
-        } else if (isSameDay(this.dueDate, tomorrow)) {
-            return "Tomorrow";
-        } else if (isSameDay(this.dueDate, today)) {
-            return "Today";
-        } else {
-            return format(this.dueDate, 'd MMM');
-        }
-    }
 }
 
 
-const createItem = function(title, description, dueDate, callback) {
+exports.create = async function(title, description, dueDate, callback) {
     const key = datastore.key(kind);
 
     const todo = {
@@ -42,11 +18,19 @@ const createItem = function(title, description, dueDate, callback) {
             title: title,
             description: description,
             dueDate: dueDate,
-            status: 0
+            finished: false
         },
     };
 
-    datastore.save(todo, callback);
+    datastore.upsert(todo, async (err, response)  => {
+        if (err) {
+            callback(undefined, err);
+        } else {
+            const id = parseInt(response.mutationResults[0]?.key.path[0]?.id, 10);
+            const [item] = await datastore.get(datastore.key([kind, id]));
+            callback(mapTodo(item), undefined);
+        }
+    });
 }
 
 exports.get = async function(id, callback) {
@@ -62,7 +46,8 @@ exports.finish = function(id, callback) {
 
 exports.delete = function(id, callback) {
     console.log(`Delete todo ${id}`);
-    datastore.delete(datastore.key([kind, id]), callback);
+    const todoKey = datastore.key([kind, Number(id)])
+    datastore.delete(todoKey, callback);
 }
 
 
@@ -98,13 +83,12 @@ exports.fetchAll = function(callback, options = {sort: "date", order: "asc"}) {
   }; */
 function mapTodo(entity) {
     let todo = new Todo();
+    console.log(entity);
     todo.id = entity[datastore.KEY].id;
     todo.title = entity.title;
     todo.description = entity.description ?? "";
     todo.dueDate = entity.dueDate;
-    todo.status = entity.status ?? 0;
+    todo.finished = entity.finished;
 
     return todo;
 }
-
-exports.create = createItem;
