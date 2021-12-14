@@ -7,7 +7,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: process['env']._FIREBASE_API_KEY,
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: `${import.meta.env.VITE_GCLOUD_PROJECT}.firebaseapp.com`,
     projectId: process.env.VITE_GCLOUD_PROJECT,
     storageBucket: `${import.meta.env.VITE_GCLOUD_PROJECT}.appspot.com`,
