@@ -1,10 +1,10 @@
 <script>
 import DefaultLayout from "../layout/LayoutDefault.vue";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GithubAuthProvider } from "firebase/auth";
 
 export default {
   name: "Login",
-  inject: ["auth"],
+  inject: ["auth", "githubProvider"],
   data() {
     return {
       email: "",
@@ -38,6 +38,27 @@ export default {
           this.loginError = true;
         });
     },
+    signInWithGithub() {
+      signInWithPopup(this.auth, this.githubProvider)
+        .then((result) => {
+          this.loginError = false;
+          const user = result.user;
+          console.log("Successfully registered");
+          console.log(user);
+          if (this.$route.query.redirect) {
+            this.$router.push(this.$route.query.redirect);
+          } else {
+            this.$router.push("/");
+          }
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.email;
+          // The AuthCredential type that was used.
+          const credential = GithubAuthProvider.credentialFromError(error);
+        });
+    }
   },
   computed: {
     redirectParams() {
@@ -145,7 +166,7 @@ export default {
           </div>
         </div>
         <p v-if="loginError" class="text-red-500 text-xs italic">Invalid credentials</p>
-        <div>
+        <div class="space-y-4">
           <button
             type="submit"
             class="
@@ -185,7 +206,33 @@ export default {
                 />
               </svg>
             </span>
-            Login
+            Sign in
+          </button>
+          <button
+            @click="signInWithGithub"
+            class="
+              group
+              relative
+              w-full
+              flex
+              justify-center
+              py-2
+              px-4
+              border-2 border-black
+              text-sm
+              font-medium
+              rounded-md
+              text-black
+              bg-white
+              hover:text-white
+              hover:bg-black
+              focus:outline-none
+              focus:ring-2
+              focus:ring-offset-2
+              focus:ring-black
+            "
+          >
+            Sign in with GitHub
           </button>
         </div>
       </form>

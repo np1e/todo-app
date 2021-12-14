@@ -4,12 +4,12 @@ import router from './router';
 import './index.css';
 import { createApp } from 'vue';
 import { initializeApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getAuth, connectAuthEmulator, GithubAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: `${import.meta.env.VITE_GCLOUD_PROJECT}.firebaseapp.com`,
-    projectId: process.env.VITE_GCLOUD_PROJECT,
+    projectId: import.meta.env.VITE_GCLOUD_PROJECT,
     storageBucket: `${import.meta.env.VITE_GCLOUD_PROJECT}.appspot.com`,
     messagingSenderId: import.meta.env.VITE_PROJECT_NUMBER,
     appId: "1:72095501801:web:d256ee1fd1eeff7f91cf78"
@@ -17,6 +17,7 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 const auth = getAuth();
+const githubProvider = new GithubAuthProvider();
 
 if (import.meta.env.DEV) {
     connectAuthEmulator(auth, "http://localhost:9099");
@@ -25,5 +26,6 @@ if (import.meta.env.DEV) {
 createApp(App)
     .provide('api', api)
     .provide('auth', auth)
+    .provide('githubProvider', githubProvider)
     .use(router)
     .mount('#app');
