@@ -9,7 +9,8 @@ export default {
     name: 'TodoList',
     inject: ['api'],
     components: {
-        'todo-item': TodoItem
+        'todo-item': TodoItem,
+        'create-todo': CreateTodo
     },
     data() {
         return {
