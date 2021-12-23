@@ -1,0 +1,24 @@
+---
+swagger: "2.0"
+info:
+  title: "Todo App"
+  version: "1.0.0"
+host: "api-service-gxouiy3ebq-ew.a.run.app"
+schemes:
+  - "https"
+x-google-backend:
+  address: https://backend-dot-playground-330914.appspot.com/
+  jwt_audience: /projects/72095501801/apps/playground-330914
+  protocol: h2
+paths:
+  "/todos":
+    get:
+      description: "Get all todos"
+      operationId: "todos"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: 'array'
+        default:
+          description: "An error occured"
