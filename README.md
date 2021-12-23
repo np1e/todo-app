@@ -43,3 +43,9 @@ In the `server` directory run `npm install` to install the dependencies. All fol
  ```
  npm run dev
  ```
+
+### Deployment
+
+App Engine
+
+ ## Client
